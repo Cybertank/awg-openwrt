@@ -1,0 +1,41 @@
+name: Build AmneziaWG
+
+on:
+  workflow_dispatch:
+    inputs:
+      openwrt_version:
+        description: 'OpenWrt version'
+        required: true
+        default: '24.10.5'
+      target:
+        description: 'Target (e.g. mediatek/filogic)'
+        required: true
+        default: 'mediatek/filogic'
+      arch:
+        description: 'Architecture'
+        required: true
+        default: 'aarch64_cortex-a53'
+      vermagic:
+        description: 'Vermagic from your router'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up build environment
+        run: |
+          echo "OPENWRT_VERSION=${{ github.event.inputs.openwrt_version }}" >> $GITHUB_ENV
+          echo "TARGET=${{ github.event.inputs.target }}" >> $GITHUB_ENV
+          echo "ARCH=${{ github.event.inputs.arch }}" >> $GITHUB_ENV
+          echo "VERMAGIC=${{ github.event.inputs.vermagic }}" >> $GITHUB_ENV
+      - name: Build kmod-amneziawg
+        run: |
+          # Скрипт автоматически подтянет SDK и соберёт модуль под ваш vermagic
+          ./build.sh
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: amneziawg-packages
+          path: bin/packages/
