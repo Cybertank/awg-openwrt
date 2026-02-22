@@ -13,10 +13,12 @@ on:
     inputs:
       version:
         description: 'OpenWRT version (e.g., 24.10.5)'
+        default: '24.10.5'
         required: true
         type: string
       targets:
         description: 'Targets (comma-separated, optional)'
+        default: 'mediatek/filogic'
         required: false
         type: string
       subtargets:
